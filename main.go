@@ -25,6 +25,7 @@ func main() {
 		Position:  rl.NewVector2(0, 0),
 		HitBox:    rl.NewRectangle(0, 0, 100, 50),
 		Direction: rl.NewVector2(0, 0),
+		Health:    10,
 	}
 	playerSpeed := 200
 
@@ -91,7 +92,8 @@ func main() {
 			rl.BeginDrawing()
 			rl.ClearBackground(rl.Green)
 
-			rl.DrawRectangle(30, 1000, 500, 50, rl.Red)
+			rl.DrawRectangle(30, 1000, 500, 50, rl.White)
+			rl.DrawRectangle(30, 1000, int32(50*player.Health), 50, rl.Red)
 
 			rl.BeginMode2D(cam)
 			DrawWorld()
