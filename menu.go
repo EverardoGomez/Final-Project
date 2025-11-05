@@ -70,7 +70,7 @@ func DrawButton(b Button) {
 
 // Detects Mouse Clicks on buttons
 func DetectMouseClick(b *Button) bool {
-	IsMouseOver(&*b)
+	IsMouseOver(b)
 
 	if b.MouseOver {
 		if rl.IsMouseButtonPressed(rl.MouseButtonLeft) {
