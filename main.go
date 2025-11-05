@@ -2,6 +2,7 @@ package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
 
+// This is a test for github
 func main() {
 
 	rl.InitWindow(1920, 1080, "My Final Project :)")
