@@ -20,12 +20,21 @@ func main() {
 
 	rl.SetTargetFPS(60)
 
-	cam := rl.NewCamera2D(
-		rl.NewVector2(0, 0),
-		rl.NewVector2(0, 0),
-		0,
-		1,
-	)
+	// The Player starting info
+	player := Entity{
+		Position: rl.NewVector2(0, 0),
+		HitBox:   rl.NewRectangle(0, 0, 100, 50),
+	}
+	playerSpeed := 200
+
+	// The cam for the player
+	cam := rl.Camera2D{
+		Offset: rl.NewVector2(float32(rl.GetScreenWidth())/2,
+			float32(rl.GetScreenHeight())/2),
+		Target:   player.Position,
+		Rotation: 0.0,
+		Zoom:     1,
+	}
 
 	// Color Themes for their respective menus
 	mainMenuTheme := ColorTheme{
@@ -79,9 +88,44 @@ func main() {
 			rl.EndDrawing()
 		case Game:
 			rl.BeginDrawing()
-			rl.BeginMode2D(cam)
+			rl.ClearBackground(rl.Green)
 
-			rl.ClearBackground(rl.Blue)
+			rl.DrawRectangle(30, 1000, 500, 50, rl.Red)
+
+			rl.BeginMode2D(cam)
+			rl.DrawRectangle(30, 50, 50, 100, rl.Brown)
+
+			// updates the camera
+			cam.Target = player.Position
+
+			// Draws the Player's hitbox
+			rl.DrawRectangle(int32(player.HitBox.X), int32(player.HitBox.Y), player.HitBox.ToInt32().Width, player.HitBox.ToInt32().Height, rl.Black)
+
+			// Player Movement
+			if rl.IsKeyDown(rl.KeyD) {
+				dx := player.Position.X + (float32(playerSpeed) * rl.GetFrameTime())
+				player.Position.X = dx
+				player.HitBox.X = dx
+				cam.Target = player.Position
+			}
+			if rl.IsKeyDown(rl.KeyA) {
+				dx := player.Position.X - (float32(playerSpeed) * rl.GetFrameTime())
+				player.Position.X = dx
+				player.HitBox.X = dx
+				cam.Target = player.Position
+			}
+			if rl.IsKeyDown(rl.KeyW) {
+				dy := player.Position.Y - (float32(playerSpeed) * rl.GetFrameTime())
+				player.Position.Y = dy
+				player.HitBox.Y = dy
+				cam.Target = player.Position
+			}
+			if rl.IsKeyDown(rl.KeyS) {
+				dy := player.Position.Y + (float32(playerSpeed) * rl.GetFrameTime())
+				player.Position.Y = dy
+				player.HitBox.Y = dy
+				cam.Target = player.Position
+			}
 
 			rl.EndMode2D()
 			rl.EndDrawing()
