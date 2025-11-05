@@ -22,8 +22,9 @@ func main() {
 
 	// The Player starting info
 	player := Entity{
-		Position: rl.NewVector2(0, 0),
-		HitBox:   rl.NewRectangle(0, 0, 100, 50),
+		Position:  rl.NewVector2(0, 0),
+		HitBox:    rl.NewRectangle(0, 0, 100, 50),
+		Direction: rl.NewVector2(0, 0),
 	}
 	playerSpeed := 200
 
@@ -93,7 +94,7 @@ func main() {
 			rl.DrawRectangle(30, 1000, 500, 50, rl.Red)
 
 			rl.BeginMode2D(cam)
-			rl.DrawRectangle(30, 50, 50, 100, rl.Brown)
+			DrawWorld()
 
 			// updates the camera
 			cam.Target = player.Position
@@ -106,24 +107,36 @@ func main() {
 				dx := player.Position.X + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
 				player.HitBox.X = dx
+				player.Direction.X = 1
 				cam.Target = player.Position
 			}
 			if rl.IsKeyDown(rl.KeyA) {
 				dx := player.Position.X - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
 				player.HitBox.X = dx
+				player.Direction.X = -1
 				cam.Target = player.Position
 			}
 			if rl.IsKeyDown(rl.KeyW) {
 				dy := player.Position.Y - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
 				player.HitBox.Y = dy
+				player.Direction.Y = -1
 				cam.Target = player.Position
 			}
 			if rl.IsKeyDown(rl.KeyS) {
 				dy := player.Position.Y + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
 				player.HitBox.Y = dy
+				player.Direction.Y = 1
+				cam.Target = player.Position
+			}
+			// The DASH CODE
+			if rl.IsKeyPressed(rl.KeyLeftShift) {
+				player.Position.X += 16000 * rl.GetFrameTime() * player.Direction.X
+				player.Position.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
+				player.HitBox.X += 16000 * rl.GetFrameTime() * player.Direction.X
+				player.HitBox.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
 				cam.Target = player.Position
 			}
 
