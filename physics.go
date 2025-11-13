@@ -1,6 +1,10 @@
 package main
 
-import rl "github.com/gen2brain/raylib-go/raylib"
+import (
+	"math"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
 
 // This file will handle all of the physics in my game; aka my bootleg physics engine
 
@@ -29,4 +33,14 @@ func CircCollision(c1 Circle, c2 Circle) bool {
 		return true
 	}
 	return false
+}
+
+// converts degrees to radients
+func Deg2Rad(d float32) float32 {
+	return d * (math.Pi / 180)
+}
+
+// converts radients to a vector that points in the direction based off the angle
+func Deg2Rotate(rad float32) rl.Vector2 {
+	return rl.NewVector2(float32(math.Cos(float64(rad))), float32(math.Sin(float64(rad))))
 }

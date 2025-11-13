@@ -26,6 +26,7 @@ func main() {
 		HitBox:    rl.NewRectangle(0, 0, 100, 50),
 		Direction: rl.NewVector2(0, 0),
 		Health:    10,
+		Rotate:    0.0,
 	}
 	playerSpeed := 200
 
@@ -92,9 +93,6 @@ func main() {
 			rl.BeginDrawing()
 			rl.ClearBackground(rl.Green)
 
-			rl.DrawRectangle(30, 1000, 500, 50, rl.White)
-			rl.DrawRectangle(30, 1000, int32(50*player.Health), 50, rl.Red)
-
 			rl.BeginMode2D(cam)
 			DrawWorld()
 
@@ -102,7 +100,7 @@ func main() {
 			cam.Target = player.Position
 
 			// Draws the Player's hitbox
-			rl.DrawRectangle(int32(player.HitBox.X), int32(player.HitBox.Y), player.HitBox.ToInt32().Width, player.HitBox.ToInt32().Height, rl.Black)
+			rl.DrawRectangleRec(player.HitBox, rl.Black)
 
 			// Player Movement
 			if rl.IsKeyDown(rl.KeyD) {
@@ -112,12 +110,18 @@ func main() {
 				player.Direction.X = 1
 				cam.Target = player.Position
 			}
+			if rl.IsKeyReleased(rl.KeyD) {
+				player.Direction.X = 0
+			}
 			if rl.IsKeyDown(rl.KeyA) {
 				dx := player.Position.X - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
 				player.HitBox.X = dx
 				player.Direction.X = -1
 				cam.Target = player.Position
+			}
+			if rl.IsKeyReleased(rl.KeyA) {
+				player.Direction.X = 0
 			}
 			if rl.IsKeyDown(rl.KeyW) {
 				dy := player.Position.Y - (float32(playerSpeed) * rl.GetFrameTime())
@@ -126,12 +130,18 @@ func main() {
 				player.Direction.Y = -1
 				cam.Target = player.Position
 			}
+			if rl.IsKeyReleased(rl.KeyW) {
+				player.Direction.Y = 0
+			}
 			if rl.IsKeyDown(rl.KeyS) {
 				dy := player.Position.Y + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
 				player.HitBox.Y = dy
 				player.Direction.Y = 1
 				cam.Target = player.Position
+			}
+			if rl.IsKeyReleased(rl.KeyS) {
+				player.Direction.Y = 0
 			}
 			// The DASH CODE
 			if rl.IsKeyPressed(rl.KeyLeftShift) {
@@ -143,6 +153,10 @@ func main() {
 			}
 
 			rl.EndMode2D()
+
+			rl.DrawRectangle(30, 1000, 500, 50, rl.White)
+			rl.DrawRectangle(30, 1000, int32(50*player.Health), 50, rl.Red)
+
 			rl.EndDrawing()
 		case GameMenu:
 		}

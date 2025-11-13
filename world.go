@@ -13,6 +13,7 @@ type Entity struct {
 	HitBox    rl.Rectangle
 	Direction rl.Vector2
 	Health    int
+	Rotate    float32
 	Item
 }
 
@@ -29,13 +30,19 @@ type Item struct {
 	OnUseEffect []func()
 }
 
+type Tile struct {
+	left  rl.Rectangle
+	right rl.Rectangle
+	top   rl.Rectangle
+}
+
 // Draws the world
 func DrawWorld() {
 	tempFloor := rl.Rectangle{
 		X:      0,
 		Y:      0,
-		Width:  500,
-		Height: 500,
+		Width:  1500,
+		Height: 1500,
 	}
 
 	rl.DrawRectanglePro(tempFloor, rl.Vector2Zero(), 60, rl.SkyBlue)
@@ -55,6 +62,18 @@ func (i *Item) BasicSwing() {
 // Throws a sword slash that becomes a projectile
 func (i *Item) ThrowSword() {
 
+}
+
+func (t *Tile) CreateTile(num int) {
+	for i := 0; i < num; i++ {
+
+	}
+}
+
+func DrawTiles(t *[]Tile) {
+	for i := 0; i < len(*t); i++ {
+		rl.DrawRectanglePro((*t)[i].top, rl.Vector2Zero(), 75, rl.Gray)
+	}
 }
 
 // This function creates enemies
