@@ -8,6 +8,15 @@ import (
 
 // This file will hold all the structs that will make up the game world. I couldn't think of a good name for it so world it is :)
 
+type Type int
+
+const (
+	Basic = iota
+	Trap
+	Hole
+	Spawn
+)
+
 type Entity struct {
 	Position  rl.Vector2
 	HitBox    rl.Rectangle
@@ -31,73 +40,79 @@ type Item struct {
 }
 
 type Tile struct {
-	left  rl.Rectangle
-	right rl.Rectangle
-	top   rl.Rectangle
+	X      float32
+	Y      float32
+	TileW  float32
+	TileHm float32
+	Depth  float32
+	Type   Type
+	Color  rl.Color
 }
 
-// Draws the world
-func DrawWorld() {
-	tempFloor := rl.Rectangle{
-		X:      0,
-		Y:      0,
-		Width:  1500,
-		Height: 1500,
-	}
+func makeTiles() [50][50]Tile {
+	MaxHoles := 10
+	SpawnTile := 10
+	TrapTiles := 20
+	t := [50][50]Tile{}
 
-	rl.DrawRectanglePro(tempFloor, rl.Vector2Zero(), 60, rl.SkyBlue)
-}
+	for i := 0; i < len(t); i++ {
+		for j := 0; j < len(t[i]); j++ {
 
-// This function adds effects to items
-func (i *Item) AddOnUseEffect(test func()) {
-	i.OnUseEffect = append(i.OnUseEffect, test)
-}
+			r := rand.IntN(100)
 
-// Basic attakcs of items
-func (i *Item) BasicSwing() {
-	//hitBox := rl.NewRectangle(i.Pos.X, i.Pos.Y, 100, 50)
+			if MaxHoles > 0 && r < 10 {
+				t[i][j].Type = Hole
+				MaxHoles--
+			} else if SpawnTile > 0 && r < 25 {
+				t[i][j].Type = Spawn
+				SpawnTile--
+			} else if TrapTiles > 0 && r < 35 {
+				t[i][j].Type = Trap
+				TrapTiles--
+			} else {
+				t[i][j].Type = Basic
+			}
 
-}
-
-// Throws a sword slash that becomes a projectile
-func (i *Item) ThrowSword() {
-
-}
-
-func (t *Tile) CreateTile(num int) {
-	for i := 0; i < num; i++ {
-
-	}
-}
-
-func DrawTiles(t *[]Tile) {
-	for i := 0; i < len(*t); i++ {
-		rl.DrawRectanglePro((*t)[i].top, rl.Vector2Zero(), 75, rl.Gray)
-	}
-}
-
-// This function creates enemies
-func CreateEnemies(num int) []Entity {
-	enemies := []Entity{}
-	for i := 0; i < num; i++ {
-		enemy := Entity{
-			Position:  rl.Vector2Zero(),
-			HitBox:    rl.NewRectangle(0, 0, 100, 50),
-			Direction: rl.NewVector2(0, 0),
-			Health:    10,
+			t[i][j].TileW = 100
+			t[i][j].TileHm = 75
+			t[i][j].Depth = 50
 		}
-		enemies = append(enemies, enemy)
 	}
-	return enemies
+
+	return t
 }
 
-// This function draws the slice of enemies
-func SpawnEnemies(e []Entity) {
-	for i := 0; i < len(e); i++ {
-		spawnPoint := rl.NewVector2(float32(rand.IntN(1920)), float32(rand.IntN(1080)))
-		e[i].Position = spawnPoint
-		e[i].HitBox.X = spawnPoint.X
-		e[i].HitBox.Y = spawnPoint.Y
-		rl.DrawRectanglePro(e[i].HitBox, e[i].Position, 0, rl.Red)
+func DrawTiles(t *[50][50]Tile) {
+	originX := float32(600)
+	originY := float32(52.6)
+
+	for i := 0; i < 50; i++ {
+		originX += 50
+		originY += 37.35
+		for j := 0; j < 50; j++ {
+			t[i][j].X = originX - float32(50*j)
+			t[i][j].Y = originY + 37.35*float32(j)
+			DrawTile(&t[i][j])
+		}
 	}
+}
+
+// Draws a tile
+func DrawTile(t *Tile) {
+	top := rl.NewVector2(t.X, t.Y)
+	left := rl.NewVector2(t.X-(t.TileW/2), t.Y+(t.TileHm/2))
+	right := rl.NewVector2(t.X+(t.TileW/2), t.Y+(t.TileHm/2))
+	bottom := rl.NewVector2(t.X, t.Y+(t.TileHm))
+
+	rl.DrawTriangleFan([]rl.Vector2{top, left, bottom, right}, rl.Black)
+
+	leftBot := rl.NewVector2(left.X, left.Y+t.Depth)
+	bottomBot := rl.NewVector2(bottom.X, bottom.Y+t.Depth)
+
+	rl.DrawTriangleFan([]rl.Vector2{bottomBot, bottom, left, leftBot}, rl.LightGray)
+
+	rightBot := rl.NewVector2(right.X, right.Y+t.Depth)
+
+	rl.DrawTriangleFan([]rl.Vector2{right, bottom, bottomBot, rightBot}, rl.Gray)
+
 }

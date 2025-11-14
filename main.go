@@ -65,6 +65,8 @@ func main() {
 		ColorTheme: mainMenuTheme,
 	}
 
+	level := makeTiles()
+
 	mode := MainMenu
 	LoadMusic(mode)
 
@@ -94,13 +96,14 @@ func main() {
 			rl.ClearBackground(rl.Green)
 
 			rl.BeginMode2D(cam)
-			DrawWorld()
 
 			// updates the camera
 			cam.Target = player.Position
 
+			DrawTiles((*[50][50]Tile)(&level))
+
 			// Draws the Player's hitbox
-			rl.DrawRectangleRec(player.HitBox, rl.Black)
+			rl.DrawRectangleRec(player.HitBox, rl.Blue)
 
 			// Player Movement
 			if rl.IsKeyDown(rl.KeyD) {
