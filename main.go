@@ -67,6 +67,9 @@ func main() {
 
 	level := makeTiles()
 
+	leftBorder := rl.Rectangle{X: level[0][0].X + 650, Y: level[0][0].Y + 100, Width: 600 + (50 * 49), Height: 52.6}
+	RightBorder := rl.Rectangle{X: level[49][49].X + 650 + (50 * 49), Y: level[49][49].Y + 2050, Width: 600 + (50 * 49), Height: 52.6}
+
 	mode := MainMenu
 	LoadMusic(mode)
 
@@ -104,6 +107,11 @@ func main() {
 
 			// Draws the Player's hitbox
 			rl.DrawRectangleRec(player.HitBox, rl.Blue)
+
+			rl.DrawRectanglePro(leftBorder, rl.Vector2Zero(), 143, rl.Pink)
+			rl.DrawRectanglePro(RightBorder, rl.Vector2Zero(), 143, rl.Pink)
+
+			RectCollision(player.HitBox, leftBorder)
 
 			// Player Movement
 			if rl.IsKeyDown(rl.KeyD) {
