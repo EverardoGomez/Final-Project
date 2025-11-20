@@ -114,5 +114,24 @@ func DrawTile(t *Tile) {
 	rightBot := rl.NewVector2(right.X, right.Y+t.Depth)
 
 	rl.DrawTriangleFan([]rl.Vector2{right, bottom, bottomBot, rightBot}, rl.Gray)
+}
 
+func BoundaryCheck(v *rl.Vector2, level *[50][50]Tile) {
+	minX := level[0][49].X - 25
+	maxX := level[49][0].X + 25
+	minY := level[0][0].Y
+	maxY := level[49][49].Y + 37
+
+	if v.X < minX {
+		v.X = minX
+	}
+	if v.X > maxX {
+		v.X = maxX
+	}
+	if v.Y < minY {
+		v.Y = minY
+	}
+	if v.Y > maxY {
+		v.Y = maxY
+	}
 }

@@ -109,6 +109,7 @@ func main() {
 			if rl.IsKeyDown(rl.KeyD) {
 				dx := player.Position.X + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
+				BoundaryCheck(&player.Position, &level)
 				player.HitBox.X = dx
 				player.Direction.X = 1
 				cam.Target = player.Position
@@ -119,6 +120,7 @@ func main() {
 			if rl.IsKeyDown(rl.KeyA) {
 				dx := player.Position.X - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
+				BoundaryCheck(&player.Position, &level)
 				player.HitBox.X = dx
 				player.Direction.X = -1
 				cam.Target = player.Position
@@ -129,6 +131,7 @@ func main() {
 			if rl.IsKeyDown(rl.KeyW) {
 				dy := player.Position.Y - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
+				BoundaryCheck(&player.Position, &level)
 				player.HitBox.Y = dy
 				player.Direction.Y = -1
 				cam.Target = player.Position
@@ -139,6 +142,7 @@ func main() {
 			if rl.IsKeyDown(rl.KeyS) {
 				dy := player.Position.Y + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
+				BoundaryCheck(&player.Position, &level)
 				player.HitBox.Y = dy
 				player.Direction.Y = 1
 				cam.Target = player.Position
@@ -152,6 +156,7 @@ func main() {
 				player.Position.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
 				player.HitBox.X += 16000 * rl.GetFrameTime() * player.Direction.X
 				player.HitBox.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
+				BoundaryCheck(&player.Position, &level)
 				cam.Target = player.Position
 			}
 
