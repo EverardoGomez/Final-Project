@@ -131,21 +131,30 @@ func DrawTile(t *Tile) {
 }
 
 func BoundaryCheck(v *rl.Vector2, level *[50][50]Tile) {
-	minX := level[0][49].X - 25
-	maxX := level[49][0].X + 25
-	minY := level[0][0].Y
-	maxY := level[49][49].Y + 37
+	OX := float32(600)
+	OY := float32(52.6)
+	W := float32(50)
+	H := float32(37.35)
 
-	if v.X < minX {
-		v.X = minX
+	// Convert player XY → isometric tile coordinates (i,j)
+	i := ((v.Y-OY)/H - (v.X-OX)/W) / 2
+	j := ((v.Y-OY)/H + (v.X-OX)/W) / 2
+
+	// Clamp to the valid tile range
+	if i < 0 {
+		i = 0
 	}
-	if v.X > maxX {
-		v.X = maxX
+	if i > 49 {
+		i = 49
 	}
-	if v.Y < minY {
-		v.Y = minY
+	if j < 0 {
+		j = 0
 	}
-	if v.Y > maxY {
-		v.Y = maxY
+	if j > 49 {
+		j = 49
 	}
+
+	// Convert corrected (i,j) back to screen coordinates
+	v.X = OX + W*(i-j)
+	v.Y = OY + H*(i+j)
 }
