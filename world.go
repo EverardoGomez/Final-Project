@@ -99,12 +99,26 @@ func DrawTiles(t *[50][50]Tile) {
 
 // Draws a tile
 func DrawTile(t *Tile) {
+	color := rl.Color{}
+
 	top := rl.NewVector2(t.X, t.Y)
 	left := rl.NewVector2(t.X-(t.TileW/2), t.Y+(t.TileHm/2))
 	right := rl.NewVector2(t.X+(t.TileW/2), t.Y+(t.TileHm/2))
 	bottom := rl.NewVector2(t.X, t.Y+(t.TileHm))
 
-	rl.DrawTriangleFan([]rl.Vector2{top, left, bottom, right}, rl.Black)
+	if t.Type == Basic {
+		color = rl.Black
+	}
+	if t.Type == Trap {
+		color = rl.Lime
+	}
+	if t.Type == Hole {
+		color = rl.Blue
+	}
+	if t.Type == Spawn {
+		color = rl.Purple
+	}
+	rl.DrawTriangleFan([]rl.Vector2{top, left, bottom, right}, color)
 
 	leftBot := rl.NewVector2(left.X, left.Y+t.Depth)
 	bottomBot := rl.NewVector2(bottom.X, bottom.Y+t.Depth)
