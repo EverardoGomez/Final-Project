@@ -22,8 +22,8 @@ func main() {
 
 	// The Player starting info
 	player := Entity{
-		Position:  rl.NewVector2(0, 0),
-		HitBox:    rl.NewRectangle(0, 0, 100, 50),
+		Position:  rl.NewVector2(600, 200),
+		HitBox:    rl.NewRectangle(600, 200, 100, 50),
 		Direction: rl.NewVector2(0, 0),
 		Health:    10,
 		Rotate:    0.0,
@@ -95,24 +95,12 @@ func main() {
 			rl.BeginDrawing()
 			rl.ClearBackground(rl.Green)
 
-			rl.BeginMode2D(cam)
-
-			// updates the camera
-			cam.Target = player.Position
-
-			DrawTiles((*[50][50]Tile)(&level))
-
-			// Draws the Player's hitbox
-			rl.DrawRectangleRec(player.HitBox, rl.Blue)
-
 			// Player Movement
 			if rl.IsKeyDown(rl.KeyD) {
 				dx := player.Position.X + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.X = dx
+				player.HitBox.X = player.Position.X
 				player.Direction.X = 1
-				cam.Target = player.Position
 			}
 			if rl.IsKeyReleased(rl.KeyD) {
 				player.Direction.X = 0
@@ -120,10 +108,8 @@ func main() {
 			if rl.IsKeyDown(rl.KeyA) {
 				dx := player.Position.X - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.X = dx
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.X = dx
+				player.HitBox.X = player.Position.X
 				player.Direction.X = -1
-				cam.Target = player.Position
 			}
 			if rl.IsKeyReleased(rl.KeyA) {
 				player.Direction.X = 0
@@ -131,10 +117,8 @@ func main() {
 			if rl.IsKeyDown(rl.KeyW) {
 				dy := player.Position.Y - (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.Y = dy
+				player.HitBox.Y = player.Position.Y
 				player.Direction.Y = -1
-				cam.Target = player.Position
 			}
 			if rl.IsKeyReleased(rl.KeyW) {
 				player.Direction.Y = 0
@@ -142,10 +126,8 @@ func main() {
 			if rl.IsKeyDown(rl.KeyS) {
 				dy := player.Position.Y + (float32(playerSpeed) * rl.GetFrameTime())
 				player.Position.Y = dy
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.Y = dy
+				player.HitBox.Y = player.Position.Y
 				player.Direction.Y = 1
-				cam.Target = player.Position
 			}
 			if rl.IsKeyReleased(rl.KeyS) {
 				player.Direction.Y = 0
@@ -156,9 +138,16 @@ func main() {
 				player.Position.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
 				player.HitBox.X += 16000 * rl.GetFrameTime() * player.Direction.X
 				player.HitBox.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
-				BoundaryCheck(&player.Position, &level)
-				cam.Target = player.Position
 			}
+
+			// updates the camera
+			cam.Target = player.Position
+			rl.BeginMode2D(cam)
+
+			DrawTiles((*[50][50]Tile)(&level))
+
+			// Draws the Player's hitbox
+			rl.DrawRectangleRec(player.HitBox, rl.Blue)
 
 			rl.EndMode2D()
 

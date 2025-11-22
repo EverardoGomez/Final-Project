@@ -8,6 +8,8 @@ import (
 
 // This file will hold all the structs that will make up the game world. I couldn't think of a good name for it so world it is :)
 
+var BoundTop, BoundLeft, BoundRight, BoundBottom rl.Vector2
+
 type Type int
 
 const (
@@ -47,6 +49,18 @@ type Tile struct {
 	Depth  float32
 	Type   Type
 	Color  rl.Color
+}
+
+func ComputeBounds() {
+	OX := float32(600)
+	OY := float32(52.6)
+	W := float32(50)
+	H := float32(37.35)
+
+	BoundTop = rl.NewVector2(OX+W*49, OY)
+	BoundLeft = rl.NewVector2(OX-W*49, OY+H*49)
+	BoundRight = rl.NewVector2(OX+W*(49+49), OY+H*49)
+	BoundBottom = rl.NewVector2(OX+W*49, OY+H*(49+49))
 }
 
 func makeTiles() [50][50]Tile {
@@ -128,33 +142,4 @@ func DrawTile(t *Tile) {
 	rightBot := rl.NewVector2(right.X, right.Y+t.Depth)
 
 	rl.DrawTriangleFan([]rl.Vector2{right, bottom, bottomBot, rightBot}, rl.Gray)
-}
-
-func BoundaryCheck(v *rl.Vector2, level *[50][50]Tile) {
-	OX := float32(600)
-	OY := float32(52.6)
-	W := float32(50)
-	H := float32(37.35)
-
-	// Convert player XY → isometric tile coordinates (i,j)
-	i := ((v.Y-OY)/H - (v.X-OX)/W) / 2
-	j := ((v.Y-OY)/H + (v.X-OX)/W) / 2
-
-	// Clamp to the valid tile range
-	if i < 0 {
-		i = 0
-	}
-	if i > 49 {
-		i = 49
-	}
-	if j < 0 {
-		j = 0
-	}
-	if j > 49 {
-		j = 49
-	}
-
-	// Convert corrected (i,j) back to screen coordinates
-	v.X = OX + W*(i-j)
-	v.Y = OY + H*(i+j)
 }
