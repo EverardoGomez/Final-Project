@@ -28,7 +28,6 @@ func main() {
 		Health:    10,
 		Rotate:    0.0,
 	}
-	playerSpeed := 200
 
 	// The cam for the player
 	cam := rl.Camera2D{
@@ -65,8 +64,6 @@ func main() {
 		ColorTheme: mainMenuTheme,
 	}
 
-	level := makeTiles()
-
 	mode := MainMenu
 	LoadMusic(mode)
 
@@ -100,65 +97,8 @@ func main() {
 			// updates the camera
 			cam.Target = player.Position
 
-			DrawTiles((*[50][50]Tile)(&level))
-
 			// Draws the Player's hitbox
 			rl.DrawRectangleRec(player.HitBox, rl.Blue)
-
-			// Player Movement
-			if rl.IsKeyDown(rl.KeyD) {
-				dx := player.Position.X + (float32(playerSpeed) * rl.GetFrameTime())
-				player.Position.X = dx
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.X = dx
-				player.Direction.X = 1
-				cam.Target = player.Position
-			}
-			if rl.IsKeyReleased(rl.KeyD) {
-				player.Direction.X = 0
-			}
-			if rl.IsKeyDown(rl.KeyA) {
-				dx := player.Position.X - (float32(playerSpeed) * rl.GetFrameTime())
-				player.Position.X = dx
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.X = dx
-				player.Direction.X = -1
-				cam.Target = player.Position
-			}
-			if rl.IsKeyReleased(rl.KeyA) {
-				player.Direction.X = 0
-			}
-			if rl.IsKeyDown(rl.KeyW) {
-				dy := player.Position.Y - (float32(playerSpeed) * rl.GetFrameTime())
-				player.Position.Y = dy
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.Y = dy
-				player.Direction.Y = -1
-				cam.Target = player.Position
-			}
-			if rl.IsKeyReleased(rl.KeyW) {
-				player.Direction.Y = 0
-			}
-			if rl.IsKeyDown(rl.KeyS) {
-				dy := player.Position.Y + (float32(playerSpeed) * rl.GetFrameTime())
-				player.Position.Y = dy
-				BoundaryCheck(&player.Position, &level)
-				player.HitBox.Y = dy
-				player.Direction.Y = 1
-				cam.Target = player.Position
-			}
-			if rl.IsKeyReleased(rl.KeyS) {
-				player.Direction.Y = 0
-			}
-			// The DASH CODE
-			if rl.IsKeyPressed(rl.KeyLeftShift) {
-				player.Position.X += 16000 * rl.GetFrameTime() * player.Direction.X
-				player.Position.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
-				player.HitBox.X += 16000 * rl.GetFrameTime() * player.Direction.X
-				player.HitBox.Y += 16000 * rl.GetFrameTime() * player.Direction.Y
-				BoundaryCheck(&player.Position, &level)
-				cam.Target = player.Position
-			}
 
 			rl.EndMode2D()
 
