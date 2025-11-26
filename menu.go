@@ -56,9 +56,9 @@ func IsMouseOver(b *Button) {
 }
 
 // This Function draws the button
-func DrawButton(b Button) {
+func DrawButton(b *Button) {
 	color := b.BaseColor
-	IsMouseOver(&b)
+	IsMouseOver(b)
 
 	if b.MouseOver {
 		color = b.AccentColor
