@@ -59,12 +59,21 @@ func main() {
 		TextColor:   rl.White,
 	}
 
-	// Main Menu Buttons
+	// Menu Buttons
 	Start := Button{
 		Position:   rl.NewVector2(1600, 500),
 		Width:      300,
 		Height:     125,
 		Text:       "Start",
+		TextSize:   50,
+		ColorTheme: mainMenuTheme,
+	}
+
+	Continue := Button{
+		Position:   rl.NewVector2(1600, 500),
+		Width:      300,
+		Height:     125,
+		Text:       "Continue",
 		TextSize:   50,
 		ColorTheme: mainMenuTheme,
 	}
@@ -78,7 +87,8 @@ func main() {
 		ColorTheme: mainMenuTheme,
 	}
 
-	mode := Game
+	dead := false
+	mode := MainMenu
 	LoadMusic(mode)
 
 	for !rl.WindowShouldClose() && running {
@@ -108,8 +118,12 @@ func main() {
 			rl.BeginDrawing()
 			rl.ClearBackground(rl.Green)
 
-			player.Direction.X = 0
-			player.Direction.Y = 0
+			if player.Health <= 0 {
+				dead = true
+			}
+			if rl.IsKeyPressed(rl.KeyEscape) || dead {
+				mode = GameMenu
+			}
 
 			if rl.IsKeyDown(rl.KeyW) {
 				player.Position.Y -= float32(player.Speed) * rl.GetFrameTime()
@@ -139,8 +153,6 @@ func main() {
 			// updates the camera
 			cam.Target = player.Position
 
-			rl.BeginMode2D(cam)
-
 			// Gets the player to rotate with the mouse direction
 			mouseWorld := rl.GetScreenToWorld2D(rl.GetMousePosition(), cam)
 			dx := mouseWorld.X - player.Position.X
@@ -148,7 +160,13 @@ func main() {
 			angle := float32(math.Atan2(float64(dy), float64(dx))) * (180.0 / math.Pi)
 			player.Rotate = angle
 
+			rl.BeginMode2D(cam)
+
 			rl.DrawRectangle(100, 100, 100, 100, rl.LightGray)
+
+			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) {
+				BasicSword(&player)
+			}
 
 			// Draws the Player's hitbox
 			rl.DrawRectanglePro(
@@ -168,6 +186,30 @@ func main() {
 
 			rl.EndDrawing()
 		case GameMenu:
+			rl.BeginDrawing()
+
+			rl.ClearBackground(rl.Gray)
+
+			if dead {
+				rl.DrawText("DEAD", 800, 400, 50, rl.Black)
+			} else {
+				rl.DrawText("PAUSED", 800, 400, 50, rl.Black)
+			}
+
+			DrawButton(&Continue)
+			DrawButton(&Quit)
+
+			if DetectMouseClick(&Continue) {
+				fmt.Println(mode)
+				mode = Game
+
+			}
+
+			if DetectMouseClick(&Quit) {
+				running = false
+			}
+
+			rl.EndDrawing()
 		}
 	}
 
