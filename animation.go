@@ -23,10 +23,10 @@ func NewAnimation(name string, text rl.Texture2D, numSprites int, switchTime flo
 	return animation
 }
 
-func (a Animation) DrawAnimation(pos rl.Vector2) {
+func (a Animation) DrawAnimation(pos rl.Vector2, rotate float32, color rl.Color) {
 	rect1 := rl.NewRectangle(float32(32*a.CurrentIndex), 0, 32, 32)
 	rect2 := rl.NewRectangle(pos.X, pos.Y, 50, 100)
-	rl.DrawTexturePro(a.SpriteSheet, rect1, rect2, rl.NewVector2(0, 0), 0, rl.White)
+	rl.DrawTexturePro(a.SpriteSheet, rect1, rect2, rl.NewVector2(0, 0), rotate, color)
 }
 
 func (a *Animation) UpdateAnimation() {

@@ -28,18 +28,21 @@ func main() {
 
 	// The Player starting info
 	player := Entity{
-		Position:  rl.NewVector2(0, 0),
-		HitBox:    rl.NewRectangle(0, 0, 50, 50),
-		Direction: rl.NewVector2(0, 0),
-		Health:    10,
-		Speed:     500,
-		Rotate:    0.0,
+		Position:     rl.NewVector2(0, 0),
+		HitBox:       rl.NewRectangle(0, 0, 50, 50),
+		Direction:    rl.NewVector2(0, 0),
+		Health:       10,
+		Speed:        500,
+		Rotate:       0.0,
+		AnimationFSM: NewAnimationFSM(),
 	}
 
-	// Player Starting Weapon
-	genericMelee := rl.LoadTexture("Assets\\sword.png")
-	melee1Sprite := NewSpriteRenderer(genericMelee, rl.Red, &player.Position)
-	melee1 := Item{Name: "Sword", Damage: 1, SpriteRenderer: melee1Sprite}
+	Idle1Text := rl.LoadTexture("Assets\\sword.png")
+	Idle1 := NewAnimation("Idle1", Idle1Text, 1, 12)
+	player.AnimationFSM.AddAnimation(Idle1)
+	player.AnimationFSM.ChangeState("Idle1")
+
+	melee1 := Item{Name: "Sword", Damage: 1, Color: rl.Red}
 
 	player.Inventory = append(player.Inventory, melee1)
 
@@ -164,7 +167,7 @@ func main() {
 
 			rl.DrawRectangle(100, 100, 100, 100, rl.LightGray)
 
-			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) {
+			if rl.IsMouseButtonDown(rl.MouseButtonLeft) {
 				BasicSword(&player)
 			}
 
@@ -175,9 +178,7 @@ func main() {
 				player.Rotate,
 				rl.Blue,
 			)
-
-			player.Inventory[0].Angle = angle
-			player.Inventory[0].Draw()
+			player.AnimationFSM.DrawFSM(player.Position, player.Rotate, player.Inventory[0].Color)
 
 			rl.EndMode2D()
 

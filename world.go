@@ -24,6 +24,7 @@ type Entity struct {
 	Speed     int
 	Rotate    float32
 	Inventory []Item
+	AnimationFSM
 }
 
 type Circle struct {
@@ -37,7 +38,7 @@ type Item struct {
 	Damage      int
 	Pos         *rl.Vector2
 	OnUseEffect []func()
-	SpriteRenderer
+	Color       rl.Color
 }
 
 type SpriteRenderer struct {
@@ -89,7 +90,7 @@ func BasicSword(e *Entity) {
 
 	rl.DrawRectanglePro(
 		entity.HitBox,
-		rl.NewVector2(e.HitBox.Width/2, e.HitBox.Height/2),
+		rl.NewVector2((e.HitBox.Width/2)+15, (e.HitBox.Height/2)+30),
 		entity.Rotate,
 		rl.Red,
 	)

@@ -24,7 +24,7 @@ func (a *AnimationFSM) ChangeState(name string) {
 	a.Current.CurrentIndex = 0
 }
 
-func (a *AnimationFSM) DrawFSM(pos rl.Vector2) {
+func (a *AnimationFSM) DrawFSM(pos rl.Vector2, rotate float32, color rl.Color) {
 	a.Current.UpdateAnimation()
-	a.Current.DrawAnimation(pos)
+	a.Current.DrawAnimation(pos, rotate, color)
 }
