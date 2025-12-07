@@ -1,6 +1,9 @@
 package main
 
 import (
+	"math"
+	"math/rand/v2"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -8,10 +11,8 @@ import (
 type Type int
 
 const (
-	Basic = iota
-	Trap
-	Hole
-	Spawn
+	Fodder = iota
+	Ranged
 )
 
 /////////////////////////////////////////////////////////////////////////////////////////////// STRUCTS ////////////////////////////////////////////////////////////////////////////////////////
@@ -25,6 +26,8 @@ type Entity struct {
 	Rotate    float32
 	Inventory []Item
 	AnimationFSM
+	Circle
+	Type
 }
 
 type Circle struct {
@@ -80,7 +83,107 @@ func (sr *SpriteRenderer) Draw() {
 
 //////////////////////////////////////////////////////////////////////////////////////////// ENEMY CODE //////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////// WEAPON CODE //////////////////////////////////////////////////////////////////////////////////////////////
+func fodder(e *Entity) Entity {
+	// 1. Random angle between 0 and 2π
+	angle := rand.Float32() * (2 * math.Pi)
+
+	// 2. Convert angle to direction vector
+	dir := rl.NewVector2(
+		float32(math.Cos(float64(angle))),
+		float32(math.Sin(float64(angle))),
+	)
+
+	// 3. Multiply by the spawn radius
+	spawnOffset := rl.Vector2Scale(dir, e.Radius)
+
+	// 4. Final spawn position
+	spawnPos := rl.NewVector2(
+		e.Position.X+spawnOffset.X,
+		e.Position.Y+spawnOffset.Y,
+	)
+
+	// Create enemy
+	enemy := Entity{
+		Speed:    100,
+		Health:   10,
+		Position: spawnPos,
+		Type:     Fodder,
+	}
+
+	return enemy
+}
+
+func ranged(e *Entity) Entity {
+	// 1. Random angle between 0 and 2π
+	angle := rand.Float32() * (2 * math.Pi)
+
+	// 2. Convert angle to direction vector
+	dir := rl.NewVector2(
+		float32(math.Cos(float64(angle))),
+		float32(math.Sin(float64(angle))),
+	)
+
+	// 3. Multiply by the spawn radius
+	spawnOffset := rl.Vector2Scale(dir, e.Radius)
+
+	// 4. Final spawn position
+	spawnPos := rl.NewVector2(
+		e.Position.X+spawnOffset.X,
+		e.Position.Y+spawnOffset.Y,
+	)
+
+	// Create enemy
+	enemy := Entity{
+		Speed:    100,
+		Health:   10,
+		Position: spawnPos,
+		Type:     Ranged,
+	}
+
+	return enemy
+}
+
+func createEnemies(num int, e *Entity) []Entity {
+	enemyList := []Entity{}
+
+	for i := 0; i < num; i++ {
+
+		var enemy Entity
+
+		// 50/50 chance
+		if rand.IntN(2) == 0 {
+			enemy = fodder(e)
+		} else {
+			enemy = ranged(e)
+		}
+
+		// Make sure this enemy doesn't spawn too close to another
+		valid := true
+		for j := 0; j < len(enemyList); j++ {
+			dx := enemy.Position.X - enemyList[j].Position.X
+			dy := enemy.Position.Y - enemyList[j].Position.Y
+			dist2 := dx*dx + dy*dy
+
+			// Minimum distance between spawns (adjust as needed)
+			minDist := float32(30.0)
+
+			if dist2 < minDist*minDist {
+				valid = false
+				break
+			}
+		}
+
+		if valid {
+			enemyList = append(enemyList, enemy)
+		} else {
+			i-- // try again for this enemy index
+		}
+	}
+
+	return enemyList
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////// WEAPON CODE /////////////////////////////////////////////////////////////////////////////////////////////
 
 func BasicSword(e *Entity) {
 	entity := Entity{

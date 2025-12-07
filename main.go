@@ -37,6 +37,9 @@ func main() {
 		AnimationFSM: NewAnimationFSM(),
 	}
 
+	player.Circle.Radius = 700
+	player.Circle.Position = player.Position
+
 	Idle1Text := rl.LoadTexture("Assets\\sword.png")
 	Idle1 := NewAnimation("Idle1", Idle1Text, 1, 12)
 	player.AnimationFSM.AddAnimation(Idle1)
@@ -101,6 +104,7 @@ func main() {
 
 			rl.ClearBackground(rl.Gray)
 
+			UpdateMusic()
 			rl.DrawText("MAIN MENU", 800, 400, 50, rl.Black)
 
 			DrawButton(&Start)
@@ -150,6 +154,7 @@ func main() {
 				player.Position.Y += 150 * 2 * player.Direction.Y
 			}
 
+			player.Circle.Position = player.Position
 			player.HitBox.X = player.Position.X
 			player.HitBox.Y = player.Position.Y
 
@@ -170,6 +175,8 @@ func main() {
 			if rl.IsMouseButtonDown(rl.MouseButtonLeft) {
 				BasicSword(&player)
 			}
+
+			rl.DrawCircle(int32(player.Circle.Position.X), int32(player.Circle.Position.Y), player.Radius, rl.Beige)
 
 			// Draws the Player's hitbox
 			rl.DrawRectanglePro(

@@ -19,6 +19,5 @@ func UpdateMusic() {
 }
 
 func EndMusic() {
-
 	rl.UnloadMusicStream(Music)
 }
